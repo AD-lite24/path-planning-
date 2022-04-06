@@ -1,3 +1,12 @@
+#Sorry for the bad code. I can see the redundacy and bad practices used, but this setup was actually meant to be experimental. 
+#I was basically testing out behaviours for every tile type and i got pretty far, so i just decided to continue with this. 
+
+#I also understand that this is not the one that was meant to be implemented, but the one i could do using my current programming skills.
+#I fully understand the cost mapping algorithm and all its demonstrations of effectiveness though
+
+#Also small bug sometimes it doesnt stop at end point, I will figure it out soon :(
+
+
 from inspect import stack
 import sys
 from turtle import right, up
@@ -16,7 +25,7 @@ class PlannerNode:
         (self.stack) = []
         self.dead =[]
         self.directions = ['up', 'down', 'left', 'right']            
-        self.found = False
+        (self.found) = False
         self.wall_callback(notDir)
         
 
@@ -42,6 +51,10 @@ class PlannerNode:
         def getCost(reqCoords):
             cost = abs(reqCoords[0] - end_coords[0]) + abs(reqCoords[1] - end_coords[1])
             return cost
+
+        #bad attempt at making the proper cost function below
+
+
 
         # def getCost(self, reqCoords) :
         #     c = [] 
@@ -101,6 +114,7 @@ class PlannerNode:
 
         if (current_coords == self.current_obj.map.end):
             self.found = True
+            print ('reached')
             return
         
         def take_random_step(index):
@@ -109,19 +123,26 @@ class PlannerNode:
                 print("a")
                 self.current_obj.direction_callback(self.directions[0])
                 self.wall_callback(self.directions[1])
+                if (self.found):
+                    return
             if (index == 1 ):
                 print("b")
                 self.current_obj.direction_callback(self.directions[1])
                 self.wall_callback(self.directions[0])
+                if (self.found):
+                    return
             if (index == 2 ):
                 print("c")
                 self.current_obj.direction_callback(self.directions[2])
                 self.wall_callback(self.directions[3])
+                if (self.found):
+                    return
             if (index == 3 ):
                 print("d")
                 self.current_obj.direction_callback(self.directions[3])
                 self.wall_callback(self.directions[2])
-                
+                if (self.found):
+                    return
         
         
         # for left-right walls
@@ -131,18 +152,26 @@ class PlannerNode:
             if (self.directions[1] != notDir and getCost(current_coords) > getCost(down_coords) and down_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[1])
                 self.wall_callback(self.directions[0])
+                if (self.found):
+                    return
             #up
             elif (self.directions[0] != notDir and getCost(current_coords) > getCost(up_coords) and up_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[0])
                 self.wall_callback(self.directions[1])
+                if (self.found):
+                    return
             else:
                 if (self.directions[1] != notDir):
                     self.current_obj.direction_callback(self.directions[1])
                     self.wall_callback(self.directions[0])
+                    if (self.found):
+                        return
 
                 elif (self.directions[0] != notDir):
                     self.current_obj.direction_callback(self.directions[0])
                     self.wall_callback(self.directions[1])
+                    if (self.found):
+                        return
 
         #for left wall
         if (tileNum == 4):
@@ -152,27 +181,39 @@ class PlannerNode:
             if (self.directions[1] != notDir and getCost(current_coords) > getCost(down_coords) and down_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[1])
                 self.wall_callback(self.directions[0])
+                if (self.found):
+                    return
             #right
             elif (self.directions[3] != notDir and getCost(current_coords) > getCost(right_coords) and right_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[3])
                 self.wall_callback(self.directions[2])
+                if (self.found):
+                    return
             #up
             elif (self.directions[0] != notDir and getCost(current_coords) > getCost(up_coords) and up_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[0])
                 self.wall_callback(self.directions[1])
+                if (self.found):
+                    return
             else:
                 #down
                 if (self.directions[1] != notDir):
                     self.current_obj.direction_callback(self.directions[1])
                     self.wall_callback(self.directions[0])
+                    if (self.found):
+                        return
                 #right
                 elif (self.directions[3] != notDir):
                     self.current_obj.direction_callback(self.directions[3])
                     self.wall_callback(self.directions[2])
+                    if (self.found):
+                        return
                 #up
                 elif (self.directions[0] != notDir):
                     self.current_obj.direction_callback(self.directions[0])
                     self.wall_callback(self.directions[1])
+                    if (self.found):
+                        return
 
         #for left-bottom walls
         if (tileNum == 5):
@@ -183,20 +224,28 @@ class PlannerNode:
             if (self.directions[3] != notDir and getCost(current_coords) > getCost(right_coords) and right_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[3])
                 self.wall_callback(self.directions[2])
+                if (self.found):
+                    return
             #up
             elif (self.directions[0] != notDir and getCost(current_coords) > getCost(up_coords) and up_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[0])
                 self.wall_callback(self.directions[1])
+                if (self.found):
+                    return
             
             else:
                 #right
                 if (self.directions[3] != notDir):
                     self.current_obj.direction_callback(self.directions[3])
                     self.wall_callback(self.directions[2])
+                    if (self.found):
+                        return
                 #up
                 elif (self.directions[0] != notDir):
                     self.current_obj.direction_callback(self.directions[0])
                     self.wall_callback(self.directions[1])
+                    if (self.found):
+                        return
         
         #for top-bottom walls
         if (tileNum == 9):
@@ -204,26 +253,38 @@ class PlannerNode:
             if (self.directions[3] != notDir and getCost(current_coords) > getCost(right_coords) and right_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[3])
                 self.wall_callback(self.directions[2])
+                if (self.found):
+                    return
             #left
             elif (self.directions[2] != notDir and getCost(current_coords) > getCost(left_coords) and left_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[2])
                 self.wall_callback(self.directions[3])
+                if (self.found):
+                    return
             else:
                 if (self.directions[3] != notDir and current_coords not in (self.stack + self.dead)):
                     self.current_obj.direction_callback(self.directions[3])
                     self.wall_callback(self.directions[2])
+                    if (self.found):
+                        return
             
                 elif (self.directions[2] != notDir and current_coords not in (self.stack + self.dead)):
                     self.current_obj.direction_callback(self.directions[2] )
                     self.wall_callback(self.directions[3])
+                    if (self.found):
+                        return
                 else:
                     if (self.directions[3] != notDir):
                         self.current_obj.direction_callback(self.directions[3])
                         self.wall_callback(self.directions[2])
+                        if (self.found):
+                            return
             
                     elif (self.directions[2] != notDir):
                         self.current_obj.direction_callback(self.directions[2] )
                         self.wall_callback(self.directions[3])
+                        if (self.found):
+                            return
 
         #for bottom wall
         if (tileNum == 1):
@@ -233,24 +294,36 @@ class PlannerNode:
             if (self.directions[3] != notDir and getCost(current_coords) > getCost(right_coords) and right_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[3])
                 self.wall_callback(self.directions[2])
+                if (self.found):
+                    return
             #up
             elif (self.directions[0] != notDir and getCost(current_coords) > getCost(up_coords) and up_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[0])
                 self.wall_callback(self.directions[1])
+                if (self.found):
+                    return
             #left
             elif (self.directions[2] != notDir and getCost(current_coords) > getCost(left_coords) and left_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[2])
                 self.wall_callback(self.directions[3])
+                if (self.found):
+                    return
             else:
                 if (self.directions[3] != notDir):
                     self.current_obj.direction_callback(self.directions[3])
                     self.wall_callback(self.directions[2])
+                    if (self.found):
+                        return
                 elif (self.directions[0] != notDir):
                     self.current_obj.direction_callback(self.directions[0])
                     self.wall_callback(self.directions[1])
+                    if (self.found):
+                        return
                 elif (self.directions[2] != notDir):
                     self.current_obj.direction_callback(self.directions[2])
                     self.wall_callback(self.directions[3])
+                    if (self.found):
+                        return
 
         #for right-bottom wall
         if (tileNum == 3):
@@ -259,17 +332,25 @@ class PlannerNode:
             if (self.directions[0] != notDir and getCost(current_coords) > getCost(up_coords) and up_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[0])
                 self.wall_callback(self.directions[1])
+                if (self.found):
+                    return
             #left
             elif (self.directions[2] != notDir and getCost(current_coords) > getCost(left_coords) and left_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[2])
                 self.wall_callback(self.directions[3])
+                if (self.found):
+                    return
             else:
                 if (self.directions[0] != notDir):
                     self.current_obj.direction_callback(self.directions[0])
                     self.wall_callback(self.directions[1])
+                    if (self.found):
+                        return
                 elif (self.directions[2]!= notDir):
                     self.current_obj.direction_callback(self.directions[2])
                     self.wall_callback(self.directions[3])
+                    if (self.found):
+                        return
         
         #for right wall
         if (tileNum == 2):
@@ -279,27 +360,39 @@ class PlannerNode:
             if (self.directions[0] != notDir and getCost(current_coords) > getCost(up_coords) and up_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[0])
                 self.wall_callback(self.directions[1])
+                if (self.found):
+                    return
             #left
             elif (self.directions[2] != notDir and getCost(current_coords) > getCost(left_coords) and left_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[2])
                 self.wall_callback(self.directions[3])
+                if (self.found):
+                    return
             #down
             elif (self.directions[1] != notDir and getCost(current_coords) > getCost(down_coords) and down_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[1])
                 self.wall_callback(self.directions[0])
+                if (self.found):
+                    return
             else:
                 #up
                 if (self.directions[0] != notDir):
                     self.current_obj.direction_callback(self.directions[0])
                     self.wall_callback(self.directions[1])
+                    if (self.found):
+                        return
                 #left
                 elif (self.directions[2] != notDir):
                     self.current_obj.direction_callback(self.directions[2])
                     self.wall_callback(self.directions[3])
+                    if (self.found):
+                        return
                 #down
                 elif (self.directions[1] != notDir):
                     self.current_obj.direction_callback(self.directions[1])
                     self.wall_callback(self.directions[0])
+                    if (self.found):
+                        return
 
         #for left wall
         if (tileNum == 4):
@@ -309,16 +402,22 @@ class PlannerNode:
             if  (self.directions[0] != notDir and getCost(current_coords) > getCost(up_coords) and up_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[0])
                 self.wall_callback(self.directions[1])
+                if (self.found):
+                    return
                 
             #right 
             elif (self.directions[3] != notDir and getCost(current_coords) > getCost(right_coords) and right_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[3])
                 self.wall_callback(self.directions[2])
+                if (self.found):
+                    return
                 
             #down
             elif (self.directions[1] != notDir and getCost(current_coords) > getCost(down_coords) and down_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[1])
                 self.wall_callback(self.directions[0])
+                if (self.found):
+                    return
 
         #for top-right wall
         if (tileNum == 10):
@@ -326,18 +425,26 @@ class PlannerNode:
             if (self.directions[2] != notDir and getCost(current_coords) > getCost(left_coords) and left_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[2])
                 self.wall_callback(self.directions[3])
+                if (self.found):
+                    return
             #down 
             elif (self.directions[1] != notDir and getCost(current_coords) > getCost(down_coords) and down_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[1])
                 self.wall_callback(self.directions[0])
+                if (self.found):
+                    return
             else:
                 if (self.directions[2] != notDir):
                     self.current_obj.direction_callback(self.directions[2])
                     self.wall_callback(self.directions[3])
+                    if (self.found):
+                        return
              
                 elif (self.directions[1] != notDir):
                     self.current_obj.direction_callback(self.directions[1])
                     self.wall_callback(self.directions[0])
+                    if (self.found):
+                        return
 
         #for top wall
         if (tileNum == 8):
@@ -347,28 +454,40 @@ class PlannerNode:
             if (self.directions[1] != notDir and getCost(current_coords) > getCost(down_coords) and down_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[1])
                 self.wall_callback(self.directions[0])
+                if (self.found):
+                    return
             #right
             elif (self.directions[3] != notDir and getCost(current_coords) > getCost(right_coords) and right_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[3])
                 self.wall_callback(self.directions[2])
+                if (self.found):
+                    return
             #left
             elif (self.directions[2] != notDir and getCost(current_coords) > getCost(left_coords) and left_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[2])
                 self.wall_callback(self.directions[3])
+                if (self.found):
+                    return
                     
             else:
                 #right
                 if (self.directions[3] != notDir):
                     self.current_obj.direction_callback(self.directions[3])
                     self.wall_callback(self.directions[2])
+                    if (self.found):
+                        return
                 #down
                 elif (self.directions[1] != notDir):
                     self.current_obj.direction_callback(self.directions[0])
                     self.wall_callback(self.directions[1])
+                    if (self.found):
+                        return
                 #left
                 elif (self.directions[2] != notDir):
                     self.current_obj.direction_callback(self.directions[2])
                     self.wall_callback(self.directions[3])
+                    if (self.found):
+                        return
                 
 
         #for top-left wall
@@ -377,18 +496,26 @@ class PlannerNode:
             if (self.directions[3] != notDir and getCost(current_coords) > getCost(right_coords) and right_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[3])
                 self.wall_callback(self.directions[2])
+                if (self.found):
+                    return
             #down
             elif(self.directions[1] != notDir and getCost(current_coords) > getCost(down_coords) and down_coords not in (self.stack + self.dead)):
                 self.current_obj.direction_callback(self.directions[1])
                 self.wall_callback(self.directions[0])
+                if (self.found):
+                    return
             else:
                 if (self.directions[3] != notDir):
                     self.current_obj.direction_callback(self.directions[3])
                     self.wall_callback(self.directions[2])
+                    if (self.found):
+                        return
             
                 elif(self.directions[1] != notDir):
                     self.current_obj.direction_callback(self.directions[1])
                     self.wall_callback(self.directions[0])
+                    if (self.found):
+                        return
             
         #for left deadend
         if (tileNum == 11):
@@ -396,6 +523,8 @@ class PlannerNode:
             print ('test worked')
             self.current_obj.direction_callback(self.directions[2])
             self.wall_callback(self.directions[3])
+            if (self.found):
+                return
 
         #for no-wall 
         if (tileNum == 0):
@@ -405,63 +534,87 @@ class PlannerNode:
                     print("1")
                     self.current_obj.direction_callback(self.directions[2])
                     self.wall_callback(self.directions[3])
+                    if (self.found):
+                        return
             #up
             elif(self.directions[0] != notDir and getCost(current_coords) > getCost(up_coords)and up_coords not in ( self.dead+ self.stack)):
                 print("2")
                 self.current_obj.direction_callback(self.directions[0])
                 self.wall_callback(self.directions[1])
+                if (self.found):
+                    return
             #down
             elif (self.directions[1] != notDir and getCost(current_coords) > getCost(down_coords) and down_coords not in  ( self.dead + self.stack)):
                 print("3")
                 self.current_obj.direction_callback(self.directions[1])
                 self.wall_callback(self.directions[0])
+                if (self.found):
+                    return
             #right
             elif (self.directions[3] != notDir and getCost(current_coords) > getCost(right_coords) and right_coords not in  ( self.dead + self.stack)):
                 print("4")
                 self.current_obj.direction_callback(self.directions[3])
                 self.wall_callback(self.directions[2])
+                if (self.found):
+                    return
             else:
             #left
                 if (self.directions[2] != notDir and left_coords not in (self.dead + self.stack)):
                     print("1")
                     self.current_obj.direction_callback(self.directions[2])
                     self.wall_callback(self.directions[3])
+                    if (self.found):
+                        return
             #up
                 elif(self.directions[0] != notDir and up_coords not in ( self.dead+ self.stack)):
                     print("2")
                     self.current_obj.direction_callback(self.directions[0])
                     self.wall_callback(self.directions[1])
+                    if (self.found):
+                        return
             #down
                 elif (self.directions[1] != notDir and down_coords not in  ( self.dead + self.stack)):
                     print("3")
                     self.current_obj.direction_callback(self.directions[1])
                     self.wall_callback(self.directions[0])
+                    if (self.found):
+                        return
             #right
                 elif (self.directions[3] != notDir and right_coords not in  ( self.dead + self.stack)):
                     print("4")
                     self.current_obj.direction_callback(self.directions[3])
                     self.wall_callback(self.directions[2])
+                    if (self.found):
+                        return
                 else:
                     #left
                     if (self.directions[2] != notDir and left_coords not in (self.dead)):
                         print("1")
                         self.current_obj.direction_callback(self.directions[2])
                         self.wall_callback(self.directions[3])
+                        if (self.found):
+                            return
                     #up
                     elif(self.directions[0] != notDir and up_coords not in ( self.dead)):
                         print("2")
                         self.current_obj.direction_callback(self.directions[0])
                         self.wall_callback(self.directions[1])
+                        if (self.found):
+                            return
             #down
                     elif (self.directions[1] != notDir and down_coords not in  ( self.dead)):
                         print("3")
                         self.current_obj.direction_callback(self.directions[1])
                         self.wall_callback(self.directions[0])
+                        if (self.found):
+                            return
             #right
                     elif (self.directions[3] != notDir and right_coords not in  ( self.dead)):
                         print("4")
                         self.current_obj.direction_callback(self.directions[3])
                         self.wall_callback(self.directions[2])
+                        if (self.found):
+                            return
 
         #for right deadend
         if (tileNum == 13):
@@ -469,6 +622,8 @@ class PlannerNode:
             print ('test worked')
             self.current_obj.direction_callback(self.directions[3])
             self.wall_callback(self.directions[2])
+            if (self.found):
+                return
                 
         #for top deadend
         if (tileNum == 14):
@@ -476,6 +631,8 @@ class PlannerNode:
             print ('test worked')
             self.current_obj.direction_callback(self.directions[1])
             self.wall_callback(self.directions[0])
+            if (self.found):
+                return
         
         #for bottom deadend
         if (tileNum == 7):
@@ -483,6 +640,8 @@ class PlannerNode:
             print ('test worked')
             self.current_obj.direction_callback(self.directions[0])
             self.wall_callback(self.directions[1])
+            if (self.found):
+                return
         
             
 
